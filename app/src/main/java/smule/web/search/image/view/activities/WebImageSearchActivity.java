@@ -79,8 +79,7 @@ public class WebImageSearchActivity extends AppCompatActivity implements WebSear
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Log.d("SMULE1 OnquerySubmit ", query);
-                imageSearch.sendSearchQuery(query, 1);
+               imageSearch.sendSearchQuery(query, 1);
 
                 return true;
 
@@ -88,7 +87,6 @@ public class WebImageSearchActivity extends AppCompatActivity implements WebSear
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.d("SMULE1 OnqueryChange ", newText);
                 imageSearch.sendSearchQuery(newText, 1);
 
                 return true;
@@ -135,7 +133,6 @@ public class WebImageSearchActivity extends AppCompatActivity implements WebSear
         if (results != null && results.size() > 0) {
             final int totalItemsCount = (webImageSearchResponse.getRequest().getTotalResults() > 1000) ? 1000 : webImageSearchResponse.getRequest().getTotalResults();
             try {
-                Log.d("SMULE1 ::", "popeulateRec " + results.size());
                 webImageSearchAdapter = new WebImageSearchAdapter(this, results);
                 staggeredGrid = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
                 searchImagesRecylerView.setAdapter(webImageSearchAdapter);
