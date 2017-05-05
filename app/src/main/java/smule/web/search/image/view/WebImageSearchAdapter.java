@@ -18,6 +18,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.LruCache;
 import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
@@ -66,7 +67,7 @@ public class WebImageSearchAdapter extends RecyclerView.Adapter<WebImageSearchAd
                 Picasso picasso = new Picasso.Builder(context).memoryCache(new LruCache(100000000)).downloader(downloader).build();
                 picasso.setIndicatorsEnabled(true);
                 if ((imageResult.getImage().getHeight() / imageResult.getImage().getThumbnailHeight() > 10)) {
-                    picasso.load(imageResult.getLink()).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).resize(imageResult.getImage().getWidth() / 10, imageResult.getImage().getHeight() / 10).into(holder.imageSearch, new Callback() {
+                    picasso.load(imageResult.getLink()).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).networkPolicy(NetworkPolicy.NO_CACHE).resize(imageResult.getImage().getWidth() / 10, imageResult.getImage().getHeight() / 10).into(holder.imageSearch, new Callback() {
                         @Override
                         public void onSuccess() {
                             isImageLoaded = true;
@@ -79,7 +80,7 @@ public class WebImageSearchAdapter extends RecyclerView.Adapter<WebImageSearchAd
 
                     });
                 } else {
-                    picasso.load(imageResult.getLink()).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(holder.imageSearch, new Callback() {
+                    picasso.load(imageResult.getLink()).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).networkPolicy(NetworkPolicy.NO_CACHE).into(holder.imageSearch, new Callback() {
                         @Override
                         public void onSuccess() {
                             isImageLoaded = true;
@@ -109,10 +110,9 @@ public class WebImageSearchAdapter extends RecyclerView.Adapter<WebImageSearchAd
                     public void onClick(View v) {
 
                         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                        sharingIntent.setType("text/plain");
-                        String shareBody = "Here is the share content body";
-                        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
-                        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                        sharingIntent.setType(context.getResources().getString(R.string.type));
+                        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,getShareSubject(imageResult));
+                        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, getShareBody(imageResult));
                         context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
                     }
                 });
@@ -125,6 +125,18 @@ public class WebImageSearchAdapter extends RecyclerView.Adapter<WebImageSearchAd
         } finally {
             isImageLoaded = false;
         }
+    }
+
+    private String getShareSubject(ImageSearchResults result){
+       String subject="";
+        subject=result.getTitle();
+        return subject;
+    }
+
+    private String getShareBody(ImageSearchResults search){
+     String shareBody="";
+        shareBody="Snippet "+search.getSnippet()+" \n Mime "+search.mime+" \n "+search.getImage().getContextLink();
+        return shareBody;
     }
 
     private void playMusicOnClick() {

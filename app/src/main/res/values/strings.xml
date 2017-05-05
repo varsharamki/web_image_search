@@ -2,4 +2,5 @@
     <string name="app_name">SmuleCodingChallenge</string>
 <string name="search_hint">Type Your Image Search </string>
     <string name="image_detail_data">IMAGE_DETAIL</string>
+    <string name="type">"text/plain"</string>
 </resources>
