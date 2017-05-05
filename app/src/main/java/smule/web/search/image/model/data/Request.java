@@ -9,21 +9,25 @@ public class Request {
     @SerializedName("totalResults")
     int totalResults;
     @SerializedName("searchTerms")
-String searchTerms;
+    String searchTerms;
     @SerializedName("count")
-int count;
+    int count;
     @SerializedName("startIndex")
-int startIndex;
+    int startIndex;
     @SerializedName("inputEncoding")
     String inputEncoding;
     @SerializedName("outputEncoding")
-String outputEncoding;
+    String outputEncoding;
     @SerializedName("safe")
-String safe;
+    String safe;
     @SerializedName("searchType")
-String searchType;
+    String searchType;
 
-    public Request(){};
+    public Request() {
+    }
+
+    ;
+
     public Request(String title, int totalResults, String searchTerms, int count, int startIndex, String inputEncoding, String outputEncoding, String safe, String searchType) {
         this.title = title;
         this.totalResults = totalResults;

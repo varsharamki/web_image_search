@@ -3,13 +3,11 @@ package smule.web.search.image.presenter.implementations;
 
 import android.content.Context;
 import android.util.Log;
-import android.view.Window;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -29,9 +27,9 @@ public class WebSearchImagePresenterImpl implements WebSearchImagePresenter {
     static final String API_CX = "000773107618163626375:-mukwin5tnk";
 
     Context context;
+    ArrayList<ImageSearchResults> imageSearchResultsArrayList = new ArrayList<ImageSearchResults>();
     private WebSearchImageView imageView;
     private WebSearchImageModel imageModel;
-    ArrayList<ImageSearchResults> imageSearchResultsArrayList = new ArrayList<ImageSearchResults>();
 
     public WebSearchImagePresenterImpl(Context context, WebSearchImageView imageView) {
         this.context = context;
@@ -51,40 +49,39 @@ public class WebSearchImagePresenterImpl implements WebSearchImagePresenter {
     }
 
     @Override
-    public void sendSearchQuery(String query,int startIndex) {
-        Log.d("SMULE1 customsear", customSearchQueryURL(query,startIndex));
-        String url = customSearchQueryURL(query,startIndex);
-      JSONObject response;
+    public void sendSearchQuery(String query, int startIndex) {
+        Log.d("SMULE1 customsear", customSearchQueryURL(query, startIndex));
+        String url = customSearchQueryURL(query, startIndex);
+        JSONObject response;
 
-       try {
+        try {
             imageModel = new WebSearchImageModelImpl();
-            imageModel.sendImageSearchRequest(url, new WebSearchImageModelImpl.OnJSONResponseCallback(){
+            imageModel.sendImageSearchRequest(url, new WebSearchImageModelImpl.OnJSONResponseCallback() {
                 @Override
                 public void onJSONResponse(boolean success, JSONObject response) {
                     Gson gson = new GsonBuilder().create();
                     WebImageSearchResponse searchResponse = gson.fromJson(response.toString(), WebImageSearchResponse.class);
-                 if(searchResponse!=null) {
-                      imageView.displayImageSearch(searchResponse);
-                 }
+                    if (searchResponse != null) {
+                        imageView.displayImageSearch(searchResponse);
+                    }
                 }
             });
 
 
-        }catch(JsonParseException | ArrayIndexOutOfBoundsException e){
+        } catch (JsonParseException | ArrayIndexOutOfBoundsException e) {
 
-        }catch(Exception e){
+        } catch (Exception e) {
 
-        }finally{
-            imageSearchResultsArrayList=null;
+        } finally {
+            imageSearchResultsArrayList = null;
         }
     }
 
     /**
-     *
      * @param query
      * @return
      */
-    private String customSearchQueryURL(String query,int startIndex) {
+    private String customSearchQueryURL(String query, int startIndex) {
         String url = "";
         String start = Integer.toString(startIndex);
         String num = "10";
@@ -98,9 +95,9 @@ public class WebSearchImagePresenterImpl implements WebSearchImagePresenter {
                     start,
                     num
             );
-        }catch (UnsupportedEncodingException exception) {
+        } catch (UnsupportedEncodingException exception) {
 
-        }catch(Exception e){
+        } catch (Exception e) {
 
         }
 

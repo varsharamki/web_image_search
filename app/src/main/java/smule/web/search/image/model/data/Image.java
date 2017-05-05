@@ -5,9 +5,20 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Image implements Parcelable{
+public class Image implements Parcelable {
 
 
+    public static final Parcelable.Creator<Image> CREATOR = new Parcelable.Creator<Image>() {
+        @Override
+        public Image createFromParcel(Parcel source) {
+            return new Image(source);
+        }
+
+        @Override
+        public Image[] newArray(int size) {
+            return new Image[size];
+        }
+    };
     @SerializedName("contextLink")
 
     public String contextLink;
@@ -33,24 +44,24 @@ public class Image implements Parcelable{
     public Image() {
     }
 
-    public Image(String contextLink,int width,int height,int byteSize,String thumbnailLink,int thumbnailWidth,int thumbnailHeight){
-this.contextLink=contextLink;
-        this.width=width;
-        this.height=height;
-        this.byteSize=byteSize;
-        this.thumbnailLink=thumbnailLink;
-        this.thumbnailHeight=thumbnailHeight;
-        this.thumbnailWidth=thumbnailWidth;
+    public Image(String contextLink, int width, int height, int byteSize, String thumbnailLink, int thumbnailWidth, int thumbnailHeight) {
+        this.contextLink = contextLink;
+        this.width = width;
+        this.height = height;
+        this.byteSize = byteSize;
+        this.thumbnailLink = thumbnailLink;
+        this.thumbnailHeight = thumbnailHeight;
+        this.thumbnailWidth = thumbnailWidth;
     }
 
-    private Image(Parcel in){
-        this.contextLink=in.readString();
-        this.width=in.readInt();
-        this.height=in.readInt();
-        this.byteSize=in.readInt();
-        this.thumbnailLink=in.readString();
-        this.thumbnailWidth=in.readInt();
-        this.thumbnailHeight=in.readInt();
+    private Image(Parcel in) {
+        this.contextLink = in.readString();
+        this.width = in.readInt();
+        this.height = in.readInt();
+        this.byteSize = in.readInt();
+        this.thumbnailLink = in.readString();
+        this.thumbnailWidth = in.readInt();
+        this.thumbnailHeight = in.readInt();
     }
 
     public String getContextLink() {
@@ -116,7 +127,7 @@ this.contextLink=contextLink;
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-dest.writeString(contextLink);
+        dest.writeString(contextLink);
         dest.writeInt(width);
         dest.writeInt(height);
         dest.writeInt(byteSize);
@@ -137,18 +148,6 @@ dest.writeString(contextLink);
                 ", thumbnailHeight=" + thumbnailHeight +
                 '}';
     }
-
-    public static final Parcelable.Creator<Image> CREATOR = new Parcelable.Creator<Image>() {
-        @Override
-        public Image createFromParcel(Parcel source) {
-            return new Image(source);
-        }
-
-        @Override
-        public Image[] newArray(int size) {
-            return new Image[size];
-        }
-    };
 
 
 }

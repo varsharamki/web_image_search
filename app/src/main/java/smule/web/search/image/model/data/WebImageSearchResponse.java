@@ -7,12 +7,14 @@ import java.util.List;
 public class WebImageSearchResponse {
 
     @SerializedName("queries")
-Request request;
+    Request request;
     @SerializedName("items")
     List<ImageSearchResults> searchResponse;
 
     public WebImageSearchResponse() {
-    };
+    }
+
+    ;
 
     public WebImageSearchResponse(Request request, List<ImageSearchResults> searchResponse) {
         this.request = request;

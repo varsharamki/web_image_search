@@ -37,16 +37,15 @@ public class WebImageSearchActivity extends AppCompatActivity implements WebSear
     RecyclerView searchImagesRecylerView;
     @InjectView(R.id.searchingProgressBar)
     ProgressBar searchingProgressBar;
-
+    boolean isLoading = false;
     private MenuItem searchImageMenuItem;
     private WebSearchImageView webSearchImageView;
     private WebImageSearchAdapter webImageSearchAdapter;
     private WebSearchImagePresenterImpl imageSearch;
     private RecyclerView.LayoutManager staggeredGrid;
-
     private WebImageSearchResponse webImageSearchResponse;
-private ArrayList<ImageSearchResults> webImageSearchResults;
-    boolean isLoading=false;
+    private ArrayList<ImageSearchResults> webImageSearchResults;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +74,7 @@ private ArrayList<ImageSearchResults> webImageSearchResults;
             @Override
             public boolean onQueryTextSubmit(String query) {
                 Log.d("SMULE1 OnquerySubmit ", query);
-                imageSearch.sendSearchQuery(query,1);
+                imageSearch.sendSearchQuery(query, 1);
 
                 return true;
 
@@ -84,7 +83,7 @@ private ArrayList<ImageSearchResults> webImageSearchResults;
             @Override
             public boolean onQueryTextChange(String newText) {
                 Log.d("SMULE1 OnqueryChange ", newText);
-                imageSearch.sendSearchQuery(newText,1);
+                imageSearch.sendSearchQuery(newText, 1);
 
                 return true;
             }
@@ -113,24 +112,24 @@ private ArrayList<ImageSearchResults> webImageSearchResults;
 
     @Override
     public void displayImageSearch(WebImageSearchResponse response) {
-       webImageSearchResponse=response;
-        if(response!=null && response.getSearchResponse()!=null) {
-           if(webImageSearchResults!=null){
-               webImageSearchResults.addAll(response.getSearchResponse());
-           }else{
-               webImageSearchResults=(ArrayList<ImageSearchResults>) response.getSearchResponse();
-           }
+        webImageSearchResponse = response;
+        if (response != null && response.getSearchResponse() != null) {
+            if (webImageSearchResults != null) {
+                webImageSearchResults.addAll(response.getSearchResponse());
+            } else {
+                webImageSearchResults = (ArrayList<ImageSearchResults>) response.getSearchResponse();
+            }
             webImageSearchAdapter = new WebImageSearchAdapter(this, webImageSearchResults);
-webImageSearchAdapter.notifyDataSetChanged();
+            webImageSearchAdapter.notifyDataSetChanged();
         }
-            populateRecyclerView(webImageSearchResults);
+        populateRecyclerView(webImageSearchResults);
     }
 
     private void populateRecyclerView(final ArrayList<ImageSearchResults> results) {
-        if (results != null && results.size()>0) {
-            final int totalItemsCount=(webImageSearchResponse.getRequest().getTotalResults()>1000)?1000:webImageSearchResponse.getRequest().getTotalResults();
+        if (results != null && results.size() > 0) {
+            final int totalItemsCount = (webImageSearchResponse.getRequest().getTotalResults() > 1000) ? 1000 : webImageSearchResponse.getRequest().getTotalResults();
             try {
-               Log.d("SMULE1 ::", "popeulateRec " + results.size());
+                Log.d("SMULE1 ::", "popeulateRec " + results.size());
                 webImageSearchAdapter = new WebImageSearchAdapter(this, results);
                 staggeredGrid = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
                 searchImagesRecylerView.setAdapter(webImageSearchAdapter);
@@ -144,26 +143,26 @@ webImageSearchAdapter.notifyDataSetChanged();
                     @Override
                     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                         super.onScrolled(recyclerView, dx, dy);
-                       int firstVisiblePosition[]=((StaggeredGridLayoutManager)staggeredGrid).findFirstCompletelyVisibleItemPositions(null);
+                        int firstVisiblePosition[] = ((StaggeredGridLayoutManager) staggeredGrid).findFirstCompletelyVisibleItemPositions(null);
 
-                        if(dy<0){
-    if(!isLoading && (firstVisiblePosition!=null && firstVisiblePosition[0]==1) && results.size()<totalItemsCount){
-isLoading=true;
-        searchingProgressBar.setVisibility(View.VISIBLE);
-  imageSearch.sendSearchQuery(webImageSearchResponse.getRequest().getSearchTerms(),webImageSearchResponse.getRequest().getStartIndex()+10);
-    }
-}
+                        if (dy < 0) {
+                            if (!isLoading && (firstVisiblePosition != null && firstVisiblePosition[0] == 1) && results.size() < totalItemsCount) {
+                                isLoading = true;
+                                searchingProgressBar.setVisibility(View.VISIBLE);
+                                imageSearch.sendSearchQuery(webImageSearchResponse.getRequest().getSearchTerms(), webImageSearchResponse.getRequest().getStartIndex() + 10);
+                            }
+                        }
 
                     }
                 });
 
             } catch (Exception e) {
 
-            }finally{
-webImageSearchResults=null;
-                webImageSearchResponse=null;
+            } finally {
+                webImageSearchResults = null;
+                webImageSearchResponse = null;
             }
-        }else{
+        } else {
 
         }
     }
@@ -173,7 +172,7 @@ webImageSearchResults=null;
 
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             if (ConnectionManager.isNetworkAvailable(this)) {
-                imageSearch.sendSearchQuery(intent.getStringExtra(SearchManager.QUERY),1);
+                imageSearch.sendSearchQuery(intent.getStringExtra(SearchManager.QUERY), 1);
             } else {
                 Toast.makeText(this, "No internet connection available.", Toast.LENGTH_SHORT).show();
             }

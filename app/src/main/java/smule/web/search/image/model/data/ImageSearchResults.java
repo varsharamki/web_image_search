@@ -6,7 +6,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ImageSearchResults implements Parcelable{
+public class ImageSearchResults implements Parcelable {
     @SerializedName("title")
     public String title;
     @SerializedName("link")
@@ -37,13 +37,13 @@ public class ImageSearchResults implements Parcelable{
         this.image = image;
     }
 
-    private ImageSearchResults(Parcel in){
-this.title=in.readString();
-        this.link=in.readString();
-        this.displayLink=in.readString();
-        this.snippet=in.readString();
-        this.mime=in.readString();
-        this.image=in.readParcelable(Image.class.getClassLoader());
+    private ImageSearchResults(Parcel in) {
+        this.title = in.readString();
+        this.link = in.readString();
+        this.displayLink = in.readString();
+        this.snippet = in.readString();
+        this.mime = in.readString();
+        this.image = in.readParcelable(Image.class.getClassLoader());
 
     }
 
@@ -113,11 +113,11 @@ this.title=in.readString();
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-dest.writeString(title);
-dest.writeString(link);
-dest.writeString(displayLink);
+        dest.writeString(title);
+        dest.writeString(link);
+        dest.writeString(displayLink);
         dest.writeString(snippet);
         dest.writeString(mime);
-        dest.writeParcelable(image,flags);
+        dest.writeParcelable(image, flags);
     }
 }

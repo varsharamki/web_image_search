@@ -23,14 +23,14 @@ public class WebSearchImageModelImpl implements WebSearchImageModel {
 
         try {
             AsyncHttpClient client = new AsyncHttpClient(true, 80, 443);
-            Log.d("SMULE1 ::",url);
+            Log.d("SMULE1 ::", url);
             client.get(url, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
 
                     if (statusCode == 200 && response != null) {
-                        callback.onJSONResponse(true,response);
+                        callback.onJSONResponse(true, response);
 
                     } else if (response == null) {
                         // handle this scenario
@@ -46,7 +46,7 @@ public class WebSearchImageModelImpl implements WebSearchImageModel {
                     } else if (statusCode == 400) {
 
                     }
-                    callback.onJSONResponse(false,errorResponse);
+                    callback.onJSONResponse(false, errorResponse);
 
                 }
             });
@@ -64,6 +64,7 @@ public class WebSearchImageModelImpl implements WebSearchImageModel {
         }
 
     }
+
     public interface OnJSONResponseCallback {
         public void onJSONResponse(boolean success, JSONObject response);
     }

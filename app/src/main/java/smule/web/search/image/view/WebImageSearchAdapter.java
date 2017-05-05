@@ -13,10 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.picasso.Callback;
+import com.squareup.picasso.LruCache;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
@@ -27,7 +28,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import smule.web.search.R;
 import smule.web.search.image.model.data.ImageSearchResults;
-import smule.web.search.image.view.activities.WebImageSearchActivity;
 import smule.web.search.image.view.activities.WebSearchImageDetailActivity;
 
 
@@ -35,7 +35,8 @@ public class WebImageSearchAdapter extends RecyclerView.Adapter<WebImageSearchAd
 
     Context context;
     ArrayList<ImageSearchResults> imageSearchResults;
-boolean isImageLoaded=false;
+    boolean isImageLoaded = false;
+
     public WebImageSearchAdapter(Context context, ArrayList<ImageSearchResults> imageSearchResults) {
         this.context = context;
         this.imageSearchResults = imageSearchResults;
@@ -55,80 +56,83 @@ boolean isImageLoaded=false;
 
     @Override
     public void onBindViewHolder(WebImageSearchViewHolder holder, int position) {
-      try {
-          if (imageSearchResults != null) {
-              final ImageSearchResults imageResult = imageSearchResults.get(position);
-              OkHttpClient okHttpClient = new OkHttpClient();
-              OkHttpDownloader downloader = new OkHttpDownloader(okHttpClient);
-              Picasso picasso = new Picasso.Builder(context).downloader(downloader).build();
-if((imageResult.getImage().getHeight()/imageResult.getImage().getThumbnailHeight()>10)){
-                  picasso.load(imageResult.getLink()).fit().resize(imageResult.getImage().getWidth()/10,imageResult.getImage().getHeight()/10).into(holder.imageSearch, new Callback() {
-                      @Override
-                      public void onSuccess() {
-                          isImageLoaded = true;
-                      }
+        try {
+            if (imageSearchResults != null) {
+                final ImageSearchResults imageResult = imageSearchResults.get(position);
 
-                      @Override
-                      public void onError() {
-                          isImageLoaded = false;
-                      }
+                OkHttpClient okHttpClient = new OkHttpClient();
+                OkHttpDownloader downloader = new OkHttpDownloader(okHttpClient);
 
-                  });
-              }else{
-    picasso.load(imageResult.getLink()).fit().into(holder.imageSearch, new Callback() {
-        @Override
-        public void onSuccess() {
-            isImageLoaded = true;
-        }
+                Picasso picasso = new Picasso.Builder(context).memoryCache(new LruCache(100000000)).downloader(downloader).build();
+                picasso.setIndicatorsEnabled(true);
+                if ((imageResult.getImage().getHeight() / imageResult.getImage().getThumbnailHeight() > 10)) {
+                    picasso.load(imageResult.getLink()).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).resize(imageResult.getImage().getWidth() / 10, imageResult.getImage().getHeight() / 10).into(holder.imageSearch, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            isImageLoaded = true;
+                        }
 
-        @Override
-        public void onError() {
+                        @Override
+                        public void onError() {
+                            isImageLoaded = false;
+                        }
+
+                    });
+                } else {
+                    picasso.load(imageResult.getLink()).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(holder.imageSearch, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            isImageLoaded = true;
+                        }
+
+                        @Override
+                        public void onError() {
+                            isImageLoaded = false;
+                        }
+
+                    });
+                }
+                holder.imageSearch.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        playMusicOnClick();
+                        Intent imageDetailIntent = new Intent(context, WebSearchImageDetailActivity.class);
+                        imageDetailIntent.putExtra(context.getResources().getString(R.string.image_detail_data), imageResult);
+                        context.startActivity(imageDetailIntent);
+                    }
+                });
+                holder.textFooter.setText(imageResult.getImage().getContextLink());
+                Linkify.addLinks(holder.textFooter, Linkify.ALL);
+                holder.textFooter.setLinkTextColor(Color.parseColor("#6e1e57"));
+                holder.shareImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                        sharingIntent.setType("text/plain");
+                        String shareBody = "Here is the share content body";
+                        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
+                        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                        context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
+                    }
+                });
+
+            } else {
+                // need a place holder for all of them
+            }
+        } catch (Exception e) {
+
+        } finally {
             isImageLoaded = false;
         }
-
-    });
-              }
-                 holder.imageSearch.setOnClickListener(new View.OnClickListener() {
-                      @Override
-                      public void onClick(View v) {
-                          playMusicOnClick();
-                          Intent imageDetailIntent = new Intent(context, WebSearchImageDetailActivity.class);
-                          imageDetailIntent.putExtra(context.getResources().getString(R.string.image_detail_data), imageResult);
-                          context.startActivity(imageDetailIntent);
-                      }
-                  });
-                  holder.textFooter.setText(imageResult.getImage().getContextLink());
-                  Linkify.addLinks(holder.textFooter, Linkify.ALL);
-                  holder.textFooter.setLinkTextColor(Color.parseColor("#6e1e57"));
-                  holder.shareImage.setOnClickListener(new View.OnClickListener() {
-                      @Override
-                      public void onClick(View v) {
-
-                          Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                          sharingIntent.setType("text/plain");
-                          String shareBody = "Here is the share content body";
-                          sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
-                          sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-                          context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
-                      }
-                  });
-
-          } else {
-              // need a place holder for all of them
-          }
-      }catch(Exception e){
-
-      }finally {
-          isImageLoaded=false;
-      }
     }
 
-    private void playMusicOnClick(){
-        try{
-             Random random=new Random();
-             final int[] resID ={R.raw.first,R.raw.second,R.raw.third,R.raw.fourth,R.raw.fifth,R.raw.sixth,
-             R.raw.seventh,R.raw.eight,R.raw.nineth,R.raw.tenth,R.raw.eleventh,R.raw.twelth,R.raw.thirteenth};
-            final MediaPlayer mp = MediaPlayer.create(context,resID[random.nextInt(resID.length)]);
+    private void playMusicOnClick() {
+        try {
+            Random random = new Random();
+            final int[] resID = {R.raw.first, R.raw.second, R.raw.third, R.raw.fourth, R.raw.fifth, R.raw.sixth,
+                    R.raw.seventh, R.raw.eight, R.raw.nineth, R.raw.tenth, R.raw.eleventh, R.raw.twelth, R.raw.thirteenth};
+            final MediaPlayer mp = MediaPlayer.create(context, resID[random.nextInt(resID.length)]);
             mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 
                 @Override
@@ -136,17 +140,18 @@ if((imageResult.getImage().getHeight()/imageResult.getImage().getThumbnailHeight
 
                     mp.reset();
                     mp.release();
-                    mp=null;
+                    mp = null;
                 }
 
             });
             mp.start();
-        }catch(Exception e){
+        } catch (Exception e) {
 
-        }finally {
+        } finally {
 
         }
     }
+
     @Override
     public int getItemCount() {
         return imageSearchResults.size();
