@@ -35,7 +35,7 @@ public class WebImageSearchAdapter extends RecyclerView.Adapter<WebImageSearchAd
 
     Context context;
     ArrayList<ImageSearchResults> imageSearchResults;
-
+boolean isImageLoaded=false;
     public WebImageSearchAdapter(Context context, ArrayList<ImageSearchResults> imageSearchResults) {
         this.context = context;
         this.imageSearchResults = imageSearchResults;
@@ -55,50 +55,72 @@ public class WebImageSearchAdapter extends RecyclerView.Adapter<WebImageSearchAd
 
     @Override
     public void onBindViewHolder(WebImageSearchViewHolder holder, int position) {
-        if (imageSearchResults != null) {
-            final ImageSearchResults imageResult = imageSearchResults.get(position);
-            OkHttpClient okHttpClient = new OkHttpClient();
-            OkHttpDownloader downloader = new OkHttpDownloader(okHttpClient);
-            Picasso picasso = new Picasso.Builder(context).downloader(downloader).build();
-            picasso.with(context).load(imageResult.getLink()).into(holder.imageSearch, new Callback() {
-                @Override
-                public void onSuccess() {
+      try {
+          if (imageSearchResults != null) {
+              final ImageSearchResults imageResult = imageSearchResults.get(position);
+              OkHttpClient okHttpClient = new OkHttpClient();
+              OkHttpDownloader downloader = new OkHttpDownloader(okHttpClient);
+              Picasso picasso = new Picasso.Builder(context).downloader(downloader).build();
+if((imageResult.getImage().getHeight()/imageResult.getImage().getThumbnailHeight()>10)){
+                  picasso.load(imageResult.getLink()).fit().resize(imageResult.getImage().getWidth()/10,imageResult.getImage().getHeight()/10).into(holder.imageSearch, new Callback() {
+                      @Override
+                      public void onSuccess() {
+                          isImageLoaded = true;
+                      }
 
-                }
+                      @Override
+                      public void onError() {
+                          isImageLoaded = false;
+                      }
 
-                @Override
-                public void onError() {
-
-                }
-
-            });
-holder.imageSearch.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-        playMusicOnClick();
-    Intent imageDetailIntent=new Intent(context, WebSearchImageDetailActivity.class);
-        imageDetailIntent.putExtra(context.getResources().getString(R.string.image_detail_data),imageResult);
-     context.startActivity(imageDetailIntent);
-     }
-});
-            holder.textFooter.setText(imageResult.getImage().getContextLink());
-            Linkify.addLinks(holder.textFooter, Linkify.ALL);
-            holder.textFooter.setLinkTextColor(Color.parseColor("#6e1e57"));
-            holder.shareImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                    sharingIntent.setType("text/plain");
-                    String shareBody = "Here is the share content body";
-                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
-                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-                    context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
-                }
-            });
-        } else {
-            // need a place holder for all of them
+                  });
+              }else{
+    picasso.load(imageResult.getLink()).fit().into(holder.imageSearch, new Callback() {
+        @Override
+        public void onSuccess() {
+            isImageLoaded = true;
         }
+
+        @Override
+        public void onError() {
+            isImageLoaded = false;
+        }
+
+    });
+              }
+                 holder.imageSearch.setOnClickListener(new View.OnClickListener() {
+                      @Override
+                      public void onClick(View v) {
+                          playMusicOnClick();
+                          Intent imageDetailIntent = new Intent(context, WebSearchImageDetailActivity.class);
+                          imageDetailIntent.putExtra(context.getResources().getString(R.string.image_detail_data), imageResult);
+                          context.startActivity(imageDetailIntent);
+                      }
+                  });
+                  holder.textFooter.setText(imageResult.getImage().getContextLink());
+                  Linkify.addLinks(holder.textFooter, Linkify.ALL);
+                  holder.textFooter.setLinkTextColor(Color.parseColor("#6e1e57"));
+                  holder.shareImage.setOnClickListener(new View.OnClickListener() {
+                      @Override
+                      public void onClick(View v) {
+
+                          Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                          sharingIntent.setType("text/plain");
+                          String shareBody = "Here is the share content body";
+                          sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
+                          sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                          context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
+                      }
+                  });
+
+          } else {
+              // need a place holder for all of them
+          }
+      }catch(Exception e){
+
+      }finally {
+          isImageLoaded=false;
+      }
     }
 
     private void playMusicOnClick(){

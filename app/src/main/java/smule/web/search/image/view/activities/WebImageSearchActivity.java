@@ -160,7 +160,8 @@ isLoading=true;
             } catch (Exception e) {
 
             }finally{
-
+webImageSearchResults=null;
+                webImageSearchResponse=null;
             }
         }else{
 
