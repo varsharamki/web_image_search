@@ -120,4 +120,16 @@ public class ImageSearchResults implements Parcelable {
         dest.writeString(mime);
         dest.writeParcelable(image, flags);
     }
+    public static final Parcelable.Creator<ImageSearchResults> CREATOR = new Parcelable.Creator<ImageSearchResults>() {
+        @Override
+        public ImageSearchResults createFromParcel(Parcel source) {
+            return new ImageSearchResults(source);
+        }
+
+        @Override
+        public ImageSearchResults[] newArray(int size) {
+            return new ImageSearchResults[size];
+        }
+    };
+
 }
