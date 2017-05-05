@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -52,11 +53,11 @@ public class WebImageSearchActivity extends AppCompatActivity implements WebSear
         setContentView(R.layout.activity_web_image_search);
         ButterKnife.inject(this);
         ActionBar aBar = this.getSupportActionBar();
+        if(aBar!=null)
         aBar.setDisplayShowTitleEnabled(false);
 
         webSearchImageView = this;
         imageSearch = new WebSearchImagePresenterImpl(this, webSearchImageView);
-        processSearchIntent(getIntent());
 
     }
 
@@ -69,6 +70,11 @@ public class WebImageSearchActivity extends AppCompatActivity implements WebSear
         searchView.setIconifiedByDefault(true);
         searchView.setIconified(false);
         searchView.clearFocus();
+        Random rndm=new Random();
+        String[] inital={"Smule","Sing","Piano","Music"};
+        searchView.setQuery(inital[rndm.nextInt(inital.length)],true);
+        imageSearch.sendSearchQuery(inital[rndm.nextInt(inital.length)],1);
+
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
