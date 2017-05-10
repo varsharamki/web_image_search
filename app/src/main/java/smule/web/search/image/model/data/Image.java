@@ -8,7 +8,17 @@ import com.google.gson.annotations.SerializedName;
 public class Image implements Parcelable {
 
 
+    public static final Parcelable.Creator<Image> CREATOR = new Parcelable.Creator<Image>() {
+        @Override
+        public Image createFromParcel(Parcel source) {
+            return new Image(source);
+        }
 
+        @Override
+        public Image[] newArray(int size) {
+            return new Image[size];
+        }
+    };
     @SerializedName("contextLink")
 
     public String contextLink;
@@ -138,16 +148,4 @@ public class Image implements Parcelable {
                 ", thumbnailHeight=" + thumbnailHeight +
                 '}';
     }
-
-    public static final Parcelable.Creator<Image> CREATOR = new Parcelable.Creator<Image>() {
-        @Override
-        public Image createFromParcel(Parcel source) {
-            return new Image(source);
-        }
-
-        @Override
-        public Image[] newArray(int size) {
-            return new Image[size];
-        }
-    };
 }

@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,12 +52,17 @@ public class WebImageSearchActivity extends AppCompatActivity implements WebSear
         setContentView(R.layout.activity_web_image_search);
         ButterKnife.inject(this);
         ActionBar aBar = this.getSupportActionBar();
-        if(aBar!=null)
-        aBar.setDisplayShowTitleEnabled(false);
+        if (aBar != null)
+            aBar.setDisplayShowTitleEnabled(false);
 
         webSearchImageView = this;
         imageSearch = new WebSearchImagePresenterImpl(this, webSearchImageView);
+        /// comented out since it was causing issues iwth oagination inteneded to be the start up screen
 
+        //     Random rndm = new Random();
+        //     String[] inital = {"Smule", "Sing", "Piano", "Music"};
+
+        //     imageSearch.sendSearchQuery(inital[rndm.nextInt(inital.length)], 1);
     }
 
     @Override
@@ -70,16 +74,13 @@ public class WebImageSearchActivity extends AppCompatActivity implements WebSear
         searchView.setIconifiedByDefault(true);
         searchView.setIconified(false);
         searchView.clearFocus();
-        Random rndm=new Random();
-        String[] inital={"Smule","Sing","Piano","Music"};
-        searchView.setQuery(inital[rndm.nextInt(inital.length)],true);
-        imageSearch.sendSearchQuery(inital[rndm.nextInt(inital.length)],1);
+
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-               imageSearch.sendSearchQuery(query, 1);
+                imageSearch.sendSearchQuery(query, 1);
 
                 return true;
 
@@ -126,6 +127,11 @@ public class WebImageSearchActivity extends AppCompatActivity implements WebSear
             webImageSearchAdapter = new WebImageSearchAdapter(this, webImageSearchResults);
             webImageSearchAdapter.notifyDataSetChanged();
         }
+        /*
+        PLACE HOLDER TO IMPLEMENT BIg BONUS Q
+
+       */
+
         populateRecyclerView(webImageSearchResults);
     }
 
@@ -151,7 +157,6 @@ public class WebImageSearchActivity extends AppCompatActivity implements WebSear
                         if (dy < 0) {
                             if (!isLoading && (firstVisiblePosition != null && firstVisiblePosition[0] == 1) && results.size() < totalItemsCount) {
                                 isLoading = true;
-                                searchingProgressBar.setVisibility(View.VISIBLE);
                                 imageSearch.sendSearchQuery(webImageSearchResponse.getRequest().getSearchTerms(), webImageSearchResponse.getRequest().getStartIndex() + 10);
                             }
                         }
@@ -162,8 +167,7 @@ public class WebImageSearchActivity extends AppCompatActivity implements WebSear
             } catch (Exception e) {
 
             } finally {
-                webImageSearchResults = null;
-                webImageSearchResponse = null;
+
             }
         } else {
 
@@ -186,5 +190,6 @@ public class WebImageSearchActivity extends AppCompatActivity implements WebSear
     protected void onNewIntent(Intent intent) {
         processSearchIntent(intent);
     }
+
 
 }

@@ -2,7 +2,6 @@ package smule.web.search.image.presenter.implementations;
 
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -50,7 +49,6 @@ public class WebSearchImagePresenterImpl implements WebSearchImagePresenter {
 
     @Override
     public void sendSearchQuery(String query, int startIndex) {
-        Log.d("SMULE1 customsear", customSearchQueryURL(query, startIndex));
         String url = customSearchQueryURL(query, startIndex);
         JSONObject response;
 
@@ -73,7 +71,7 @@ public class WebSearchImagePresenterImpl implements WebSearchImagePresenter {
         } catch (Exception e) {
 
         } finally {
-            imageSearchResultsArrayList = null;
+
         }
     }
 

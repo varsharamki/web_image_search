@@ -1,9 +1,7 @@
 package smule.web.search.image.view.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.widget.TextView;
 
 import butterknife.ButterKnife;
@@ -29,43 +27,43 @@ public class WebSearchImageDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_search_image_detail);
         ButterKnife.inject(this);
-         getData();
-         setUpActionBar();
-         populateTextView();
+        getData();
+        setUpActionBar();
+        populateTextView();
     }
 
-private void setUpActionBar(){
-    this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    this.getSupportActionBar().setTitle(getResources().getString(R.string.image_detail_tile));
+    private void setUpActionBar() {
+        this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        this.getSupportActionBar().setTitle(getResources().getString(R.string.image_detail_tile));
 
-}
+    }
 
-    private void getData(){
-        if(getIntent()!=null){
-if(getIntent().hasExtra(getResources().getString(R.string.image_detail_data))){
-    imageSearchResults=getIntent().getParcelableExtra(getResources().getString(R.string.image_detail_data));
-}
+    private void getData() {
+        if (getIntent() != null) {
+            if (getIntent().hasExtra(getResources().getString(R.string.image_detail_data))) {
+                imageSearchResults = getIntent().getParcelableExtra(getResources().getString(R.string.image_detail_data));
+            }
         }
     }
 
-  private void populateTextView(){
-      try{
-          if(imageSearchResults!=null){
-              text.setText(String.format(getResources().getString(R.string.snippet),imageSearchResults.getSnippet()));
-              imageText.setText(String.format(getResources().getString(R.string.display_link),imageSearchResults.getDisplayLink()));
-              imageDetail.setText(String.format(getResources().getString(R.string.display_title),imageSearchResults.getTitle()));
-              imageDetailText.setText(String.format(getResources().getString(R.string.mime),imageSearchResults.getMime()));
+    private void populateTextView() {
+        try {
+            if (imageSearchResults != null) {
+                text.setText(String.format(getResources().getString(R.string.snippet), imageSearchResults.getSnippet()));
+                imageText.setText(String.format(getResources().getString(R.string.display_link), imageSearchResults.getDisplayLink()));
+                imageDetail.setText(String.format(getResources().getString(R.string.display_title), imageSearchResults.getTitle()));
+                imageDetailText.setText(String.format(getResources().getString(R.string.mime), imageSearchResults.getMime()));
 
-          }else{
-              // more place holder data for the text view
+            } else {
+                // more place holder data for the text view
 
-          }
-      }catch(Exception e){
+            }
+        } catch (Exception e) {
 
-      }finally{
-          imageSearchResults=null;
-      }
+        } finally {
+            imageSearchResults = null;
+        }
 
-  }
+    }
 
 }

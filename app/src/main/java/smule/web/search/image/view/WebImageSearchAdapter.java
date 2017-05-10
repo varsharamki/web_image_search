@@ -111,7 +111,7 @@ public class WebImageSearchAdapter extends RecyclerView.Adapter<WebImageSearchAd
 
                         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                         sharingIntent.setType(context.getResources().getString(R.string.type));
-                        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,getShareSubject(imageResult));
+                        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getShareSubject(imageResult));
                         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, getShareBody(imageResult));
                         context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
                     }
@@ -127,15 +127,15 @@ public class WebImageSearchAdapter extends RecyclerView.Adapter<WebImageSearchAd
         }
     }
 
-    private String getShareSubject(ImageSearchResults result){
-       String subject="";
-        subject=result.getTitle();
+    private String getShareSubject(ImageSearchResults result) {
+        String subject = "";
+        subject = result.getTitle();
         return subject;
     }
 
-    private String getShareBody(ImageSearchResults search){
-     String shareBody="";
-        shareBody="Snippet "+search.getSnippet()+" \n Mime "+search.mime+" \n "+search.getImage().getContextLink();
+    private String getShareBody(ImageSearchResults search) {
+        String shareBody = "";
+        shareBody = "Snippet " + search.getSnippet() + " \n Mime " + search.mime + " \n " + search.getImage().getContextLink();
         return shareBody;
     }
 
